@@ -69,11 +69,16 @@ class PageBreakPattern(InlineProcessor):
     def handleMatch(self, m, data):
         el = et.Element('anchor')
         attr_text = m.group(1)
-        mtc = re.match(r'page=(\d+),\s*label=\'([^\']+)\'\s*$', attr_text)
-        if not mtc:
-            return el, m.start(), m.end()
-        el.attrib['page'] = mtc.group(1)
-        el.attrib['label'] = mtc.group(2)
+        mtc = re.match(r'\s*number=(\d+) \s*label="([^"]+)"\s*$', attr_text)
+        if mtc is None:
+            mtc = re.match(r'\s*label="([^"]+)"\s+number=(\d+)\s*$', attr_text)
+            if mtc is None:
+                return None
+            el.attrib['page'] = mtc.group(2)
+            el.attrib['label'] = mtc.group(1)
+        else:
+            el.attrib['page'] = mtc.group(1)
+            el.attrib['label'] = mtc.group(2)
         return el, m.start(0), m.end(0)
 
 class CuMarkdown(markdown.Markdown):
