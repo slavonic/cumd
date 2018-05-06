@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+.venv
+.pytest_cache
+
+test.md
+test.html

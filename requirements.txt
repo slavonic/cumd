@@ -1,0 +1,3 @@
+git+https://github.com/Python-Markdown/markdown.git
+lxml
+lxmlx
