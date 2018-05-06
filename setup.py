@@ -41,7 +41,8 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'cumd=cumd.__main__:main'
+            'cumd=cumd.cumd:main',
+            'cuxml=cumd.cuxml:main'
         ],
     },
 )

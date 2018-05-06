@@ -144,7 +144,7 @@ def convert(fname):
             yield text.strip() + '\n\n'
 
 
-if __name__ == '__main__':
+def main():
     import argparse
 
     parser = argparse.ArgumentParser(description='Converts XML to cu-flavored markdown')
@@ -156,3 +156,7 @@ if __name__ == '__main__':
     with open(args.output, 'w', encoding='utf-8') as f:
         for data in convert(args.input):
             f.write(data)
+
+
+if __name__ == '__main__':
+    main()
