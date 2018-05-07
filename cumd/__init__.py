@@ -1,4 +1,4 @@
-__version__      = '0.1.7'
+__version__      = '0.2.0'
 __author__       = 'Mike Kroutikov'
 __author_email__ = 'pgmmpk@gmail.com'
 __description__  = 'Church Slavonic extensions to Markdown'
