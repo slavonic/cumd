@@ -34,7 +34,10 @@ def md(events):
             elif obj['tag'] == _ns('anchor'):
                 number = obj['attrib']['number']
                 label =  obj['attrib']['label']
-                yield dict(type=ev.TEXT, text='((label="%s" number=%s))' % (label, number))
+                if number == label:
+                    yield dict(type=ex.TEXT, text='((%s))' % number)
+                else:
+                    yield dict(type=ev.TEXT, text='((%s: %s))' % (label, number))
             elif obj['tag'] == _ns('disp'):
                 pass
             elif obj['tag'] == _ns('img'):

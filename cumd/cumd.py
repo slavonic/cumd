@@ -65,7 +65,7 @@ class RedBukvaPattern(InlineProcessor):
 class PageBreakPattern(InlineProcessor):
     """handles page break anchors"""
     def __init__(self):
-        InlineProcessor.__init__(self, r'<<(\d+)(:[^>)]+)?>>')
+        InlineProcessor.__init__(self, r'<<(\d+)(?::\s*([^>)]+))?>>')
 
     def handleMatch(self, m, data):
         el = et.Element('anchor')
@@ -80,7 +80,7 @@ class PageBreakPattern(InlineProcessor):
 class VerseLabelPattern(InlineProcessor):
     """handles verse numbering anchors"""
     def __init__(self):
-        InlineProcessor.__init__(self, r'\({2}(.+?)\){2}')
+        InlineProcessor.__init__(self, r'\({2}\s*(.+?)\s*\){2}')
 
     def handleMatch(self, m, data):
         el = et.Element('verse')
