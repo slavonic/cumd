@@ -50,6 +50,7 @@ class RedBukvaExtension(Extension):
         md.inlinePatterns['emphasis'].tag = 'red'
         md.inlinePatterns['strong'].tag = 'wide'
         md.inlinePatterns['pageBreak'] = PageBreakPattern()
+        md.inlinePatterns['verseLabel'] = VerseLabelPattern()
 
 class RedBukvaPattern(InlineProcessor):
     """wraps first letter in <red> tag"""
@@ -64,21 +65,26 @@ class RedBukvaPattern(InlineProcessor):
 class PageBreakPattern(InlineProcessor):
     """handles page break anchors"""
     def __init__(self):
-        InlineProcessor.__init__(self, r'\({2}([^\)]+)\){2}')
+        InlineProcessor.__init__(self, r'<<(\d+)(:[^>)]+)?>>')
 
     def handleMatch(self, m, data):
         el = et.Element('anchor')
-        attr_text = m.group(1)
-        mtc = re.match(r'\s*number=(\d+) \s*label="([^"]+)"\s*$', attr_text)
-        if mtc is None:
-            mtc = re.match(r'\s*label="([^"]+)"\s+number=(\d+)\s*$', attr_text)
-            if mtc is None:
-                return None
-            el.attrib['page'] = mtc.group(2)
-            el.attrib['label'] = mtc.group(1)
-        else:
-            el.attrib['page'] = mtc.group(1)
-            el.attrib['label'] = mtc.group(2)
+        number = m.group(1)
+        label = m.group(2)
+        if not label:
+            label = number
+        el.attrib['page'] = number
+        el.attrib['label'] = label
+        return el, m.start(0), m.end(0)
+
+class VerseLabelPattern(InlineProcessor):
+    """handles verse numbering anchors"""
+    def __init__(self):
+        InlineProcessor.__init__(self, r'\({2}(.+?)\){2}')
+
+    def handleMatch(self, m, data):
+        el = et.Element('verse')
+        el.attrib['label'] = m.group(1)
         return el, m.start(0), m.end(0)
 
 class CuMarkdown(markdown.Markdown):
