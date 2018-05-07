@@ -35,9 +35,12 @@ def md(events):
                 number = obj['attrib']['number']
                 label =  obj['attrib']['label']
                 if number == label:
-                    yield dict(type=ex.TEXT, text='((%s))' % number)
+                    yield dict(type=ev.TEXT, text='<<%s>>' % number)
                 else:
-                    yield dict(type=ev.TEXT, text='((%s: %s))' % (label, number))
+                    yield dict(type=ev.TEXT, text='<<%s: %s>>' % (label, number))
+            elif obj['tag'] == _ns('verse'):
+                label =  obj['attrib']['label']
+                yield dict(type=ev.TEXT, text='((%s))' % label)
             elif obj['tag'] == _ns('disp'):
                 pass
             elif obj['tag'] == _ns('img'):
