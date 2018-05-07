@@ -11,6 +11,7 @@ Church Slavonic dialect of Markdown
    as the page number
 5. Use leading curcumflex symbol to mark bukvitsa: `^Вначале было Слово`
 6. For verse numbering use `((и))`
+7. For footnote use `[[footnote text]]` (Attention: this is likely to change)
 
 This package provides two commands:
 * `cumd` - renders markdown into html
