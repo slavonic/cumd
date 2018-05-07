@@ -47,6 +47,7 @@ class RedBukvaExtension(Extension):
 
     def extendMarkdown(self, md, md_globals):
         md.inlinePatterns['redBukva'] = RedBukvaPattern()
+        md.inlinePatterns['bukvitsa'] = BukvitsaPattern()
         md.inlinePatterns['emphasis'].tag = 'red'
         md.inlinePatterns['strong'].tag = 'wide'
         md.inlinePatterns['pageBreak'] = PageBreakPattern()
@@ -59,6 +60,16 @@ class RedBukvaPattern(InlineProcessor):
 
     def handleMatch(self, m, data):
         el = et.Element('red')
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
+
+class BukvitsaPattern(InlineProcessor):
+    """wraps first letter in <bukvitsa> tag"""
+    def __init__(self):
+        InlineProcessor.__init__(self, r'\^(' + RE_CU_LETTER + ')')
+
+    def handleMatch(self, m, data):
+        el = et.Element('bukvitsa')
         el.text = m.group(1)
         return el, m.start(0), m.end(0)
 
