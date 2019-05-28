@@ -36,22 +36,23 @@ CU_COMBINERS = CU_ACCENTS_1 + [
 CU_BREATHING = '\u0486'
 CU_BREATHING_HARD = '\u0485'
 
-RE_COMBINERS = ''.join(re.escape(x) for x in CU_COMBINERS + [CU_BREATHING, CU_BREATHING_HARD])
+RE_COMBINERS = ''.join(x for x in CU_COMBINERS + [CU_BREATHING, CU_BREATHING_HARD])
 RE_DIGRAPHS = 'оу|Оу|ᲂу'
 
-RE_CU_LETTER = '(?:' + RE_DIGRAPHS + '|\\S)[' + RE_COMBINERS + ']*'
+RE_CU_LETTER = '(?:' + RE_DIGRAPHS + '|\\w)[' + RE_COMBINERS + ']*'
 
 
 class RedBukvaExtension(Extension):
     """Church Slavonic extensions to Markdown"""
 
-    def extendMarkdown(self, md, md_globals):
-        md.inlinePatterns['redBukva'] = RedBukvaPattern()
-        md.inlinePatterns['bukvitsa'] = BukvitsaPattern()
-        md.inlinePatterns['emphasis'].tag = 'red'
-        md.inlinePatterns['strong'].tag = 'wide'
-        md.inlinePatterns['pageBreak'] = PageBreakPattern()
-        md.inlinePatterns['verseLabel'] = VerseLabelPattern()
+    def extendMarkdown(self, md):
+        """ Register extension instances. """
+        md.inlinePatterns.register(RedBukvaPattern(), 'redBukva', 105)
+        md.inlinePatterns.register(BukvitsaPattern(), 'bukvitsa', 105)
+        md.inlinePatterns.register(KinovarPattern(), 'kinovar', 107)
+        md.inlinePatterns.register(WidePattern(), 'wide', 107)
+        md.inlinePatterns.register(PageBreakPattern(), 'pageBreak', 106)
+        md.inlinePatterns.register(VerseLabelPattern(), 'verseLabel', 106)
 
 class RedBukvaPattern(InlineProcessor):
     """wraps first letter in <red> tag"""
@@ -60,6 +61,26 @@ class RedBukvaPattern(InlineProcessor):
 
     def handleMatch(self, m, data):
         el = et.Element('red')
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
+
+class KinovarPattern(InlineProcessor):
+    """wraps span in kinovar =xx="""
+    def __init__(self):
+        InlineProcessor.__init__(self, r'\=(\S|\S.*?\S)\=')
+
+    def handleMatch(self, m, data):
+        el = et.Element('red')
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
+
+class WidePattern(InlineProcessor):
+    """wraps span in kinovar =xx="""
+    def __init__(self):
+        InlineProcessor.__init__(self, r'\+(\S|\S.*?\S)\+')
+
+    def handleMatch(self, m, data):
+        el = et.Element('wide')
         el.text = m.group(1)
         return el, m.start(0), m.end(0)
 
@@ -159,4 +180,5 @@ def main():
             f.write(body)
 
 if __name__ == '__main__':
-    main()
+    print(repr(RE_CU_LETTER))
+    #main()
