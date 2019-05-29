@@ -4,8 +4,8 @@ Church Slavonic dialect of Markdown
 
 ## Markup
 
-1. Use star symbol to mark red spans, for example: `*Слава и ныне*`
-2. Use double underscore to mark expanded font: `__Священник глаголет:__`
+1. Use `=` symbol to mark red spans, for example: `=Слава и ныне=`
+2. Use `+` to mark expanded font: `+Священник глаголет:+`
 3. Use leading tilda to mark first letter of a word red: `~Христос рождается`
 4. For pagebreak anchors use `<<5: л. 3 об.>>` or simply ``<<5>>`` when label is the same 
    as the page number
