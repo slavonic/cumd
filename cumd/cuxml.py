@@ -26,9 +26,9 @@ def md(events):
             elif obj['tag'] == _ns('redletter'):
                 yield dict(type=ev.TEXT, text='~')
             elif obj['tag'] == _ns('red'):
-                yield dict(type=ev.TEXT, text='*')
+                yield dict(type=ev.TEXT, text='=')
             elif obj['tag'] == _ns('wide'):
-                yield dict(type=ev.TEXT, text='__')
+                yield dict(type=ev.TEXT, text='+')
             elif obj['tag'] == _ns('footnote'):
                 yield dict(type=ev.TEXT, text='[[')
             elif obj['tag'] == _ns('anchor'):
@@ -56,9 +56,9 @@ def md(events):
             elif peer['tag'] == _ns('redletter'):
                 pass
             elif peer['tag'] == _ns('red'):
-                yield dict(type=ev.TEXT, text='*')
+                yield dict(type=ev.TEXT, text='=')
             elif peer['tag'] == _ns('wide'):
-                yield dict(type=ev.TEXT, text='__')
+                yield dict(type=ev.TEXT, text='+')
             elif peer['tag'] == _ns('footnote'):
                 yield dict(type=ev.TEXT, text=']]')
             elif peer['tag'] == _ns('anchor'):
