@@ -29,15 +29,16 @@ setup(
         'Intended Audience :: Religion',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
-        # 'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
 
-    packages=find_packages(),
+    packages='cumd',
 
-    install_requires=['markdown', 'lxml', 'lxmlx'],
+    install_requires=['markdown==3.1.1', 'lxml', 'lxmlx'],
 
     entry_points={
         'console_scripts': [

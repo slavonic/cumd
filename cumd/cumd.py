@@ -6,6 +6,7 @@ import markdown
 from markdown.extensions import Extension
 from markdown.inlinepatterns import InlineProcessor
 from markdown.util import etree as et
+from . import __version__
 
 
 CU_ACCENTS_1 = [  # Aleksandr put only those for the start of the word patterns
@@ -158,11 +159,12 @@ HTML_TEMPLATE = '''\
 <body>
 %s
 </body>
+</html>
 '''
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description='Converts CU markdown to HTML')
+    parser = argparse.ArgumentParser(description='Converts CU markdown to HTML (version %s)' % __version__)
     parser.add_argument('input', help='File name of the input *.md file')
     parser.add_argument('output', help='File name of the output *.html file')
     parser.add_argument('--html', action='store_true', default=False, help='Set to generate viewable HTML')
@@ -180,5 +182,5 @@ def main():
             f.write(body)
 
 if __name__ == '__main__':
-    print(repr(RE_CU_LETTER))
-    #main()
+    #print(repr(RE_CU_LETTER))
+    main()
