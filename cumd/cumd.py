@@ -3,8 +3,10 @@ Markdown extensions to support Church Slavonic
 """
 import re
 import markdown
+import logging
 from markdown.extensions import Extension
 from markdown.inlinepatterns import InlineProcessor
+from markdown.treeprocessors import Treeprocessor
 from markdown.util import etree as et
 from . import __version__
 
@@ -54,6 +56,7 @@ class RedBukvaExtension(Extension):
         md.inlinePatterns.register(WidePattern(), 'wide', 107)
         md.inlinePatterns.register(PageBreakPattern(), 'pageBreak', 106)
         md.inlinePatterns.register(VerseLabelPattern(), 'verseLabel', 106)
+        md.treeprocessors.register(BlockAttributeProcessor(), 'blockAttr', 100)
 
 class RedBukvaPattern(InlineProcessor):
     """wraps first letter in <red> tag"""
@@ -120,6 +123,23 @@ class VerseLabelPattern(InlineProcessor):
         el.attrib['label'] = m.group(1)
         return el, m.start(0), m.end(0)
 
+class BlockAttributeProcessor(Treeprocessor):
+    def run(self, root):
+        for block in root:
+            block.text = self._doblock(block, block.text)
+
+    def _doblock(self, block, text):
+        def sub(mtc):
+            expressions = mtc.group(1).split(',')
+            for e in expressions:
+                parts = e.split('=')
+                if len(parts) != 2:
+                    logging.warning('Could not parse expression %r' % e)
+                else:
+                    block.attrib[parts[0]] = parts[1]
+            return ''
+        return re.sub(r'\n?{{(.*?)}}\n?', sub, text)
+
 class CuMarkdown(markdown.Markdown):
     """Church Slavonic version of Mardown class"""
     def __init__(self):
@@ -153,6 +173,19 @@ HTML_TEMPLATE = '''\
         red {
             display: inline;
             color: var(--kinovar);
+        }
+        p[text_align="center"] {
+            text-align: center;
+        }
+        bukvitsa {
+            display: inline-block;
+            height: 3rem;
+            padding-right: 0.25rem;
+            font-family: 'Indiction Unicode';
+            font-size: 300%%;
+            float: left;
+            color: var(--kinovar);
+            margin-top: -0.4rem;
         }
     </style>
 </head>

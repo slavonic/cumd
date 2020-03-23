@@ -36,9 +36,9 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
 
-    packages='cumd',
+    packages=['cumd'],
 
-    install_requires=['markdown==3.1.1', 'lxml', 'lxmlx'],
+    install_requires=['markdown==3.2.1', 'lxml', 'lxmlx'],
 
     entry_points={
         'console_scripts': [

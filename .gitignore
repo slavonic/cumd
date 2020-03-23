@@ -103,7 +103,8 @@ ENV/
 .venv
 .pytest_cache
 
-test.md
-test.html
+/*.md
+/*.html
 
 .vscode
+.DS_Store

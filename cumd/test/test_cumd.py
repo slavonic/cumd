@@ -70,6 +70,18 @@ def test_verse_anchor():
 <p><wide>Оу҆слы́шахъ, <red>гдⷭ҇и</red></wide>, <verse label="i"></verse>смотре́нїѧ твоегѡ̀ та́инство...</p>\
 '''
 
+def test_alignment_markers():
+    result = cumd('''
+# Заголовок{{text_align=center}}
+
+Параграф
+{{text_align=justify}}
+''')
+    assert result == '''\
+<h1 text_align="center">Заголовок</h1>
+<p text_align="justify">Параграф</p>\
+'''
+
 def _test_footnote():
     result = cumd('''
 Но даждь изводство (избытие) и крепость
