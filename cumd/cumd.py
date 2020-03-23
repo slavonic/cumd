@@ -166,9 +166,7 @@ HTML_TEMPLATE = '''\
             font-family: 'Ponomar Unicode'
         }
         wide {
-            font-size: 130%%;
-            display: inline-block;
-            transform: scaleY(0.77);
+            letter-spacing: 0.1rem;
         }
         red {
             display: inline;
