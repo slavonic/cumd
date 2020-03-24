@@ -142,16 +142,18 @@ class BlockAttributeProcessor(Treeprocessor):
 
 class CuMarkdown(markdown.Markdown):
     """Church Slavonic version of Mardown class"""
-    def __init__(self):
+    def __init__(self, *extensions):
         markdown.Markdown.__init__(
             self,
-            extensions=[RedBukvaExtension()],
+            extensions=[RedBukvaExtension(), *extensions],
             output_format='html5'
         )
 
-def cumd(text):
+def cumd(text, extensions=None):
     """converts markdown to html"""
-    return CuMarkdown().convert(text)
+    if extensions is None:
+        extensions = []
+    return CuMarkdown(*extensions).convert(text)
 
 
 HTML_TEMPLATE = '''\
@@ -199,13 +201,14 @@ def main():
     parser.add_argument('input', help='File name of the input *.md file')
     parser.add_argument('output', help='File name of the output *.html file')
     parser.add_argument('--html', action='store_true', default=False, help='Set to generate viewable HTML')
+    parser.add_argument('--extension', '-e', nargs='*', help='Extension to enable (allows multiple -e flags). For example -e footnotes')
 
     args = parser.parse_args()
 
     with open(args.input, 'r', encoding='utf-8') as f:
         text = f.read()
 
-    body = cumd(text)
+    body = cumd(text, extensions=args.extension)
     with open(args.output, 'w', encoding='utf-8') as f:
         if args.html:
             f.write(HTML_TEMPLATE % body)

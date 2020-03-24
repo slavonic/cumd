@@ -89,3 +89,22 @@ def _test_footnote():
     assert result == '''\
 <p>Но даждь <footnote style="u">изводство<text>избытие</text></footnote> и крепость</p>\
 '''
+
+def test_md_footnote():
+    result = cumd('''
+^Но даждь изводство[^1] и крепость
+
+[^1]: избытие
+''', extensions=['footnotes'])
+
+    assert result == '''\
+<p><bukvitsa>Н</bukvitsa>о даждь изводство<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> и крепость</p>
+<div class="footnote">
+<hr>
+<ol>
+<li id="fn:1">
+<p>избытие&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>\
+'''

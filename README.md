@@ -19,9 +19,10 @@ This package provides two commands:
 
 ## cumd
 ```
-usage: cumd [-h] [--html] input output
+usage: cumd.py [-h] [--html] [--extension [EXTENSION [EXTENSION ...]]]
+               input output
 
-Converts CU markdown to HTML
+Converts CU markdown to HTML (version X.Y.Z)
 
 positional arguments:
   input       File name of the input *.md file
@@ -30,6 +31,9 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
   --html      Set to generate viewable HTML
+  --extension [EXTENSION [EXTENSION ...]], -e [EXTENSION [EXTENSION ...]]
+                        Extension to enable (allows multiple -e flags). For
+                        example -e footnotes
 ```
 
 ## cuxml
