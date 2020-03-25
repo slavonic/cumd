@@ -201,14 +201,17 @@ def main():
     parser.add_argument('input', help='File name of the input *.md file')
     parser.add_argument('output', help='File name of the output *.html file')
     parser.add_argument('--html', action='store_true', default=False, help='Set to generate viewable HTML')
-    parser.add_argument('--extension', '-e', nargs='*', help='Extension to enable (allows multiple -e flags). For example -e footnotes')
+    parser.add_argument('--extensions', '-e', help='List of comma-separated extensions to enable. For example -e footnotes,math')
 
     args = parser.parse_args()
 
     with open(args.input, 'r', encoding='utf-8') as f:
         text = f.read()
 
-    body = cumd(text, extensions=args.extension)
+    extensions = []
+    if args.extensions:
+        extensions = args.extensions.split(',')
+    body = cumd(text, extensions=extensions)
     with open(args.output, 'w', encoding='utf-8') as f:
         if args.html:
             f.write(HTML_TEMPLATE % body)
