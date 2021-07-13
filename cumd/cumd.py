@@ -7,7 +7,7 @@ import logging
 from markdown.extensions import Extension
 from markdown.inlinepatterns import InlineProcessor
 from markdown.treeprocessors import Treeprocessor
-from markdown.util import etree as et
+import xml.etree.ElementTree as et
 from . import __version__
 
 
