@@ -126,7 +126,8 @@ class VerseLabelPattern(InlineProcessor):
 class BlockAttributeProcessor(Treeprocessor):
     def run(self, root):
         for block in root:
-            block.text = self._doblock(block, block.text)
+            if block.text is not None:
+                block.text = self._doblock(block, block.text)
 
     def _doblock(self, block, text):
         def sub(mtc):
