@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools", "pytest"]
+build-backend = "setuptools.build_meta" # If not defined, then legacy behavior can happen.
+
+[project]
+name = "cumd"
+version = "1.5.1"
+description = "Church Slavonic extensions to Markdown"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["church slavonic", "markdown"]
+license = { text = "MIT" }
+authors = [
+    { name = "Mike Kroutikov", email = "pgmmpk@gmail.com" },
+]
+maintainers = [
+    { name = "Mike Kroutikov", email = "pgmmpk@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Religion",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = [
+    "markdown>=3.7",
+    "lxml",
+    "lxmlx",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/slavonic/cumd/"
+"Source" = "https://github.com/slavonic/cumd/"
+
+[project.scripts]
+cumd = "cumd.cumd:main"
+cuxml = "cumd.cuxml:main"

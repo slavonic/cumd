@@ -8,7 +8,6 @@ from markdown.extensions import Extension
 from markdown.inlinepatterns import InlineProcessor
 from markdown.treeprocessors import Treeprocessor
 import xml.etree.ElementTree as et
-from . import __version__
 
 
 CU_ACCENTS_1 = [  # Aleksandr put only those for the start of the word patterns
@@ -48,53 +47,61 @@ RE_CU_LETTER = '(?:' + RE_DIGRAPHS + '|\\w)[' + RE_COMBINERS + ']*'
 class RedBukvaExtension(Extension):
     """Church Slavonic extensions to Markdown"""
 
+    def __init__(self, simplified=False):
+        self.simplified = simplified
+        super().__init__()
+
     def extendMarkdown(self, md):
         """ Register extension instances. """
-        md.inlinePatterns.register(RedBukvaPattern(), 'redBukva', 105)
-        md.inlinePatterns.register(BukvitsaPattern(), 'bukvitsa', 105)
-        md.inlinePatterns.register(KinovarPattern(), 'kinovar', 107)
-        md.inlinePatterns.register(WidePattern(), 'wide', 107)
+        md.inlinePatterns.register(RedBukvaPattern(self.simplified), 'redBukva', 105)
+        md.inlinePatterns.register(BukvitsaPattern(self.simplified), 'bukvitsa', 105)
+        md.inlinePatterns.register(KinovarPattern(self.simplified), 'kinovar', 107)
+        md.inlinePatterns.register(WidePattern(self.simplified), 'wide', 107)
         md.inlinePatterns.register(PageBreakPattern(), 'pageBreak', 106)
         md.inlinePatterns.register(VerseLabelPattern(), 'verseLabel', 106)
         md.treeprocessors.register(BlockAttributeProcessor(), 'blockAttr', 100)
 
 class RedBukvaPattern(InlineProcessor):
     """wraps first letter in <red> tag"""
-    def __init__(self):
+    def __init__(self, simplified=False):
+        self.simplified = simplified
         InlineProcessor.__init__(self, r'~(' + RE_CU_LETTER + ')')
 
     def handleMatch(self, m, data):
-        el = et.Element('red')
+        el = et.Element('span', {'class': 'red'}) if self.simplified else et.Element('red')
         el.text = m.group(1)
         return el, m.start(0), m.end(0)
 
 class KinovarPattern(InlineProcessor):
     """wraps span in kinovar =xx="""
-    def __init__(self):
+    def __init__(self, simplified=False):
+        self.simplified = simplified
         InlineProcessor.__init__(self, r'\=(\S|\S.*?\S)\=')
 
     def handleMatch(self, m, data):
-        el = et.Element('red')
+        el = et.Element('span', {'class': 'red'}) if self.simplified else et.Element('red')
         el.text = m.group(1)
         return el, m.start(0), m.end(0)
 
 class WidePattern(InlineProcessor):
     """wraps span in kinovar =xx="""
-    def __init__(self):
+    def __init__(self, simplified=False):
+        self.simplified = simplified
         InlineProcessor.__init__(self, r'\+(\S|\S.*?\S)\+')
 
     def handleMatch(self, m, data):
-        el = et.Element('wide')
+        el = et.Element('span', {'class': 'wide'}) if self.simplified else et.Element('wide')
         el.text = m.group(1)
         return el, m.start(0), m.end(0)
 
 class BukvitsaPattern(InlineProcessor):
     """wraps first letter in <bukvitsa> tag"""
-    def __init__(self):
+    def __init__(self, simplified=False):
+        self.simplified = simplified
         InlineProcessor.__init__(self, r'\^(' + RE_CU_LETTER + ')')
 
     def handleMatch(self, m, data):
-        el = et.Element('bukvitsa')
+        el = et.Element('span', {'class': 'bukvitsa'}) if self.simplified else et.Element('bukvitsa')
         el.text = m.group(1)
         return el, m.start(0), m.end(0)
 
@@ -143,18 +150,18 @@ class BlockAttributeProcessor(Treeprocessor):
 
 class CuMarkdown(markdown.Markdown):
     """Church Slavonic version of Mardown class"""
-    def __init__(self, *extensions):
+    def __init__(self, *extensions, simplified=False):
         markdown.Markdown.__init__(
             self,
-            extensions=[RedBukvaExtension(), *extensions],
+            extensions=[RedBukvaExtension(simplified=simplified), *extensions],
             output_format='html5'
         )
 
-def cumd(text, extensions=None):
+def cumd(text, extensions=None, simplified=False):
     """converts markdown to html"""
     if extensions is None:
         extensions = []
-    return CuMarkdown(*extensions).convert(text)
+    return CuMarkdown(*extensions, simplified=simplified).convert(text)
 
 
 HTML_TEMPLATE = '''\
@@ -162,6 +169,16 @@ HTML_TEMPLATE = '''\
 <head>
     <link rel="stylesheet" href="https://sci.ponomar.net/css/fonts.css" />
     <style>
+{style}
+    </style>
+</head>
+<body>
+{body}
+</body>
+</html>
+'''
+
+STANDARD_STYLE = '''\
         :root {
             --kinovar: rgb(204,8,3);
         }
@@ -183,28 +200,50 @@ HTML_TEMPLATE = '''\
             height: 3rem;
             padding-right: 0.25rem;
             font-family: 'Indiction Unicode';
-            font-size: 300%%;
+            font-size: 300%;
             float: left;
             color: var(--kinovar);
             margin-top: -0.4rem;
         }
-    </style>
-</head>
-<body>
-%s
-</body>
-</html>
+'''
+
+SIMPLE_STYLE = '''\
+        body {
+            font-family: 'Ponomar Unicode'
+        }
+        .wide {
+            letter-spacing: 0.1rem;
+        }
+        .red {
+            color: rgb(204,8,3);
+        }
+        p[text_align="center"] {
+            text-align: center;
+        }
+        .bukvitsa {
+            display: inline-block;
+            height: 3rem;
+            padding-right: 0.25rem;
+            font-family: 'Indiction Unicode';
+            font-size: 300%;
+            float: left;
+            color: rgb(204,8,3);
+            margin-top: -0.4rem;
+        }
 '''
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description='Converts CU markdown to HTML (version %s)' % __version__)
+    parser = argparse.ArgumentParser(description='Converts CU markdown to HTML')
     parser.add_argument('input', help='File name of the input *.md file')
     parser.add_argument('output', help='File name of the output *.html file')
     parser.add_argument('--html', action='store_true', default=False, help='Set to generate viewable HTML')
+    parser.add_argument('--simplified', '-s', action='store_true', default=False, help='Set to generate HTML without custom tags')
     parser.add_argument('--extensions', '-e', help='List of comma-separated extensions to enable. For example -e footnotes,math')
 
     args = parser.parse_args()
+    if args.simplified and not args.html:
+        parser.error('Flag "simplified" can only be used together with "html" flag.')
 
     with open(args.input, 'r', encoding='utf-8') as f:
         text = f.read()
@@ -212,10 +251,11 @@ def main():
     extensions = []
     if args.extensions:
         extensions = args.extensions.split(',')
-    body = cumd(text, extensions=extensions)
+    body = cumd(text, extensions=extensions, simplified=args.simplified)
     with open(args.output, 'w', encoding='utf-8') as f:
         if args.html:
-            f.write(HTML_TEMPLATE % body)
+            style = SIMPLE_STYLE if args.simplified else STANDARD_STYLE
+            f.write(HTML_TEMPLATE.format(body=body, style=style))
         else:
             f.write(body)
 

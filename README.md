@@ -14,30 +14,32 @@ Church Slavonic dialect of Markdown
 7. For footnote use `[[footnote text]]` (Attention: this is likely to change)
 
 This package provides two commands:
+
 * `cumd` - renders markdown into html
 * `cuxml` - converts Ponomar XML into markdown
 
 ## cumd
-```
-usage: cumd.py [-h] [--html] [--extension [EXTENSION [EXTENSION ...]]]
-               input output
 
-Converts CU markdown to HTML (version X.Y.Z)
+```bash
+usage: cumd [-h] [--html] [--simplified] [--extensions EXTENSIONS] input output
+
+Converts CU markdown to HTML
 
 positional arguments:
-  input       File name of the input *.md file
-  output      File name of the output *.html file
+  input                 File name of the input *.md file
+  output                File name of the output *.html file
 
-optional arguments:
-  -h, --help  show this help message and exit
-  --html      Set to generate viewable HTML
-  --extension [EXTENSION [EXTENSION ...]], -e [EXTENSION [EXTENSION ...]]
-                        Extension to enable (allows multiple -e flags). For
-                        example -e footnotes
+options:
+  -h, --help            show this help message and exit
+  --html                Set to generate viewable HTML
+  --simplified, -s      Set to generate HTML without custom tags
+  --extensions EXTENSIONS, -e EXTENSIONS
+                        List of comma-separated extensions to enable. For example -e footnotes,math
 ```
 
 ## cuxml
-```
+
+```bash
 usage: cuxml [-h] input output
 
 Converts XML to cu-flavored markdown
