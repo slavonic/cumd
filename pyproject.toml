@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta" # If not defined, then legacy behavior c
 
 [project]
 name = "cumd"
-version = "1.5.1"
+version = "1.5.2"
 description = "Church Slavonic extensions to Markdown"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 keywords = ["church slavonic", "markdown"]
 license = { text = "MIT" }
 authors = [

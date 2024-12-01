@@ -98,7 +98,6 @@ def md_block(p):
 
 
 def format_lines(text, max_line_len=80):
-    tokens = text.split()
     line_len = 0
     for tk in text.split():
         if line_len + 1 + len(tk) > max_line_len:
@@ -134,7 +133,7 @@ def normalize_anchor(xml):
             assert False, et.tostring(a, encoding='utf-8')
 
 
-def convert(fname):
+def convert(fname, max_line_len=80):
 
     with open(fname, 'r', encoding='utf-8') as f:
         xmltext = f.read()
@@ -146,7 +145,7 @@ def convert(fname):
         for p in xml:
             assert p.tag in (_ns('p'), _ns('anchor')), p.tag
             text = md_block(p)
-            text = ''.join(format_lines(text))
+            text = ''.join(format_lines(text, max_line_len=max_line_len))
             yield text.strip() + '\n\n'
 
 
@@ -156,11 +155,14 @@ def main():
     parser = argparse.ArgumentParser(description='Converts XML to cu-flavored markdown')
     parser.add_argument('input', help='input XML file')
     parser.add_argument('output', help='output Markdown file')
+    parser.add_argument('--max-line-len', '-m', type=int, default=80, help='Line length in generated Markdown (cosmetic)')
 
     args = parser.parse_args()
+    if args.max_line_len < 10:
+        parser.error('--max-line-len value is too small (give it at least 10)')
 
     with open(args.output, 'w', encoding='utf-8') as f:
-        for data in convert(args.input):
+        for data in convert(args.input, max_line_len=args.max_line_len):
             f.write(data)
 
 
