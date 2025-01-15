@@ -40,7 +40,7 @@ options:
 ## cuxml
 
 ```bash
-usage: cuxml [-h] input output
+usage: cuxml [-h] [--max-line-len MAX_LINE_LEN] input output
 
 Converts XML to cu-flavored markdown
 
@@ -50,4 +50,5 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
+  --max-line-len MAX_LINE_LEN, -m MAX_LINE_LEN   Line length in generated Markdown (cosmetic)
 ```
