@@ -13,7 +13,7 @@ def _ns(name):
 
 def detect_first_letter(blob):
     """replaces <red>b</red>lah with <redletter>b</redletter>"""
-    return re.sub(r'(<red>)(' + RE_CU_LETTER + ')(</red>)([^\s<])', '<redletter>\\2</redletter>\\4', blob)
+    return re.sub(r'(<red>)(' + RE_CU_LETTER + ')(</red>)([^\\s<])', '<redletter>\\2</redletter>\\4', blob)
 
 def md(events):
     """converts XML markup to text (cu-flavored markdown)"""
@@ -45,6 +45,12 @@ def md(events):
                 pass
             elif obj['tag'] == _ns('img'):
                 yield dict(type=ev.TEXT, text='[!image](%s)' % obj['attrib']['src'])
+            elif obj['tag'] == _ns('u'):
+                yield dict(type=ev.TEXT, text='<u>')
+            elif obj['tag'] == _ns('b'):
+                yield dict(type=ev.TEXT, text='<b>')
+            elif obj['tag'] == _ns('i'):
+                yield dict(type=ev.TEXT, text='<i>')
             else:
                 assert False, obj
 
@@ -67,6 +73,12 @@ def md(events):
                 pass
             elif peer['tag'] == _ns('img'):
                 pass
+            elif peer['tag'] == _ns('u'):
+                yield dict(type=ev.TEXT, text='</u>')
+            elif peer['tag'] == _ns('b'):
+                yield dict(type=ev.TEXT, text='</b>')
+            elif peer['tag'] == _ns('i'):
+                yield dict(type=ev.TEXT, text='</i>')
             else:
                 assert False, obj
         else:
@@ -133,20 +145,18 @@ def normalize_anchor(xml):
             assert False, et.tostring(a, encoding='utf-8')
 
 
-def convert(fname, max_line_len=80):
+def convert(xmltext, max_line_len=80):
 
-    with open(fname, 'r', encoding='utf-8') as f:
-        xmltext = f.read()
-        xmltext = detect_first_letter(xmltext)
-        xml = et.fromstring(xmltext.encode('utf-8'))
-        normalize_anchor(xml)
-        et.strip_tags(xml, _ns('footer'), et.Comment)
+    xmltext = detect_first_letter(xmltext)
+    xml = et.fromstring(xmltext.encode('utf-8'))
+    normalize_anchor(xml)
+    et.strip_tags(xml, _ns('footer'), et.Comment)
 
-        for p in xml:
-            assert p.tag in (_ns('p'), _ns('anchor')), p.tag
-            text = md_block(p)
-            text = ''.join(format_lines(text, max_line_len=max_line_len))
-            yield text.strip() + '\n\n'
+    for p in xml:
+        assert p.tag in (_ns('p'), _ns('anchor')), p.tag
+        text = md_block(p)
+        text = ''.join(format_lines(text, max_line_len=max_line_len))
+        yield text.strip() + '\n\n'
 
 
 def main():
@@ -162,7 +172,10 @@ def main():
         parser.error('--max-line-len value is too small (give it at least 10)')
 
     with open(args.output, 'w', encoding='utf-8') as f:
-        for data in convert(args.input, max_line_len=args.max_line_len):
+        with open(args.input, 'r', encoding='utf-8') as i:
+            xmltext = i.read()
+    
+        for data in convert(xmltext, max_line_len=args.max_line_len):
             f.write(data)
 
 

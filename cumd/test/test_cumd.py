@@ -188,3 +188,26 @@ def test_md_footnote_simplified():
 </ol>
 </div>\
 '''
+
+def test_md_underline():
+    result = cumd('''
+<u>Но даждь</u> изводство и крепость
+''', simplified=True)
+
+    assert result == '''<p><u>Но даждь</u> изводство и крепость</p>'''
+
+
+def test_md_bold():
+    result = cumd('''
+<b>Но даждь</b> изводство и крепость
+''', simplified=True)
+
+    assert result == '''<p><b>Но даждь</b> изводство и крепость</p>'''
+
+
+def test_md_italic():
+    result = cumd('''
+<i>Но даждь</i> изводство и крепость
+''', simplified=True)
+
+    assert result == '''<p><i>Но даждь</i> изводство и крепость</p>'''
